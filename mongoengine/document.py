@@ -48,6 +48,10 @@ __all__ = (
     "InvalidCollectionError",
     "NotUniqueError",
     "MapReduceDocument",
+    "model",
+    "embedded_model",
+    "index",
+    "Index",
 )
 
 
@@ -1158,3 +1162,236 @@ class MapReduceDocument:
             self._key_object = self._document.objects.with_id(self.key)
             return self._key_object
         return self._key_object
+
+
+class Index:
+    """Class for building complex index definitions with method chaining.
+
+    Example:
+        @index(Index("field_name").text().sparse())
+        @index(Index("created_at", "views").compound(name="time_views_idx").descending())
+    """
+
+    def __init__(self, *fields):
+        self.fields = fields
+        self.args = {}
+        self._compound = False
+
+    def compound(self, **kwargs):
+        """Create a compound index."""
+        self._compound = True
+        for key, value in kwargs.items():
+            self.args[key] = value
+        return self
+
+    def text(self):
+        """Create a text index."""
+        self.args["type"] = "text"
+        return self
+
+    def sparse(self):
+        """Create a sparse index."""
+        self.args["sparse"] = True
+        return self
+
+    def unique(self):
+        """Create a unique index."""
+        self.args["unique"] = True
+        return self
+
+    def ascending(self):
+        """Create an ascending index."""
+        self.args["direction"] = 1
+        return self
+
+    def descending(self):
+        """Create a descending index."""
+        self.args["direction"] = -1
+        return self
+
+    def to_index_spec(self):
+        """Convert to index specification format used by MongoEngine."""
+        if self._compound:
+            fields = []
+            for field in self.fields:
+                direction = self.args.get("direction", 1)
+                fields.append((field, direction))
+            result = fields
+        else:
+            field = self.fields[0]
+            if "type" in self.args and self.args["type"] == "text":
+                result = [(field, "text")]
+            else:
+                direction = self.args.get("direction", 1)
+                result = [(field, direction)]
+
+        index_spec = {"fields": result}
+
+        # Add other arguments
+        for key, value in self.args.items():
+            if key not in ["direction", "type"]:
+                index_spec[key] = value
+
+        return index_spec
+
+
+def index(field_or_index, **kwargs):
+    """Decorator to add an index to a Document class.
+
+    This should be used before the @model decorator:
+
+    @model
+    @index("title")
+    class MyDoc:
+        title = StringField()
+
+    @model
+    @index("title", unique=True)
+    class MyDoc:
+        title = StringField()
+
+    @model
+    @index(Index("title").text().sparse())
+    class MyDoc:
+        title = StringField()
+    """
+
+    def wrapper(cls):
+        if not hasattr(cls, "_indexes"):
+            cls._indexes = []
+
+        if isinstance(field_or_index, Index):
+            index_spec = field_or_index.to_index_spec()
+            cls._indexes.append(index_spec)
+        else:
+            # Simple index with possible kwargs
+            index_spec = {"fields": [(field_or_index, 1)]}
+            for key, value in kwargs.items():
+                index_spec[key] = value
+            cls._indexes.append(index_spec)
+
+        return cls
+
+    return wrapper
+
+
+def model(*args, **kwargs):
+    """A class decorator that makes the decorated class a subclass of Document.
+
+    This decorator allows for a more concise way to define Document classes
+    without explicitly inheriting from Document.
+
+    Example:
+        @model
+        class User:
+            name = StringField()
+
+        @model(collection="users_collection")
+        class User:
+            name = StringField()
+
+    Meta fields can be specified as decorator arguments:
+
+        @model(collection="users", max_documents=1000)
+        class User:
+            name = StringField()
+    """
+
+    def decorator(cls):
+        # Process meta options from kwargs
+        meta_dict = {}
+
+        for key, value in kwargs.items():
+            meta_dict[key] = value
+
+        # Check for soft_delete option
+        if kwargs.get("soft_delete", False):
+            if not hasattr(cls, "is_deleted"):
+                from mongoengine.fields import BooleanField
+
+                setattr(cls, "is_deleted", BooleanField(default=False))
+
+        # Process indexes from @index decorators
+        if hasattr(cls, "_indexes") and cls._indexes:
+            meta_dict.setdefault("indexes", [])
+            meta_dict["indexes"].extend(cls._indexes)
+            delattr(cls, "_indexes")
+
+        # Set meta on the class if meta options exist
+        if meta_dict:
+            if hasattr(cls, "meta") and isinstance(cls.meta, dict):
+                # Merge with existing meta
+                for key, value in meta_dict.items():
+                    if key == "indexes" and "indexes" in cls.meta:
+                        cls.meta["indexes"].extend(meta_dict["indexes"])
+                    else:
+                        cls.meta[key] = value
+            else:
+                # Create new meta
+                cls.meta = meta_dict
+
+        # Create a new class that inherits from both Document and the original class
+        new_cls = type(cls.__name__, (Document, cls), dict(cls.__dict__))
+
+        # Copy over docstring and other attributes
+        new_cls.__doc__ = cls.__doc__
+        new_cls.__module__ = cls.__module__
+
+        return new_cls
+
+    # Handle the case when decorator is used without arguments
+    if len(args) == 1 and callable(args[0]) and not kwargs:
+        return decorator(args[0])
+
+    return decorator
+
+
+def embedded_model(*args, **kwargs):
+    """A class decorator that makes the decorated class a subclass of EmbeddedDocument.
+
+    This decorator allows for a more concise way to define EmbeddedDocument classes
+    without explicitly inheriting from EmbeddedDocument.
+
+    Example:
+        @embedded_model
+        class Address:
+            street = StringField()
+            city = StringField()
+
+        @embedded_model(allow_inheritance=True)
+        class Address:
+            street = StringField()
+            city = StringField()
+    """
+
+    def decorator(cls):
+        # Process meta options from kwargs
+        meta_dict = {}
+
+        for key, value in kwargs.items():
+            meta_dict[key] = value
+
+        # Set meta on the class if meta options exist
+        if meta_dict:
+            if hasattr(cls, "meta") and isinstance(cls.meta, dict):
+                # Merge with existing meta
+                for key, value in meta_dict.items():
+                    cls.meta[key] = value
+            else:
+                # Create new meta
+                cls.meta = meta_dict
+
+        # Create a new class that inherits from both EmbeddedDocument and the original class
+        new_cls = type(cls.__name__, (EmbeddedDocument, cls), dict(cls.__dict__))
+
+        # Copy over docstring and other attributes
+        new_cls.__doc__ = cls.__doc__
+        new_cls.__module__ = cls.__module__
+
+        return new_cls
+
+    # Handle the case when decorator is used without arguments
+    if len(args) == 1 and callable(args[0]) and not kwargs:
+        return decorator(args[0])
+
+    return decorator
