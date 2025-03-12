@@ -6,11 +6,11 @@ def main():
 from pymongo import MongoClient
 
 connection = MongoClient(w=1)
-connection.drop_database('mongoengine_benchmark_test')
+connection.drop_database('mongoneo_benchmark_test')
 """
 
     stmt = """
-db = connection.mongoengine_benchmark_test
+db = connection.mongoneo_benchmark_test
 noddy = db.noddy
 
 for i in range(10000):
@@ -32,7 +32,7 @@ myNoddys = noddy.find()
     stmt = """
 from pymongo import WriteConcern
 
-db = connection.mongoengine_benchmark_test
+db = connection.mongoneo_benchmark_test
 noddy = db.noddy.with_options(write_concern=WriteConcern(w=0))
 
 for i in range(10000):
@@ -55,11 +55,11 @@ myNoddys = noddy.find()
 from pymongo import MongoClient
 
 connection = MongoClient()
-connection.drop_database('mongoengine_benchmark_test')
+connection.drop_database('mongoneo_benchmark_test')
 connection.close()
 
-from mongoengine import Document, DictField, connect
-connect("mongoengine_benchmark_test", w=1)
+from mongoneo import Document, DictField, connect
+connect("mongoneo_benchmark_test", w=1)
 
 class Noddy(Document):
     fields = DictField()
@@ -77,7 +77,7 @@ myNoddys = Noddy.objects()
 """
 
     print("-" * 100)
-    print('MongoEngine: Creating 10000 dictionaries (write_concern={"w": 1}).')
+    print('MongoNeo: Creating 10000 dictionaries (write_concern={"w": 1}).')
     t = timeit.Timer(stmt=stmt, setup=setup)
     print(f"{t.timeit(1)}s")
 
@@ -95,7 +95,7 @@ myNoddys = Noddy.objects()
 """
 
     print("-" * 100)
-    print("MongoEngine: Creating 10000 dictionaries (using a single field assignment).")
+    print("MongoNeo: Creating 10000 dictionaries (using a single field assignment).")
     t = timeit.Timer(stmt=stmt, setup=setup)
     print(f"{t.timeit(1)}s")
 
@@ -111,7 +111,7 @@ myNoddys = Noddy.objects()
 """
 
     print("-" * 100)
-    print('MongoEngine: Creating 10000 dictionaries (write_concern={"w": 0}).')
+    print('MongoNeo: Creating 10000 dictionaries (write_concern={"w": 0}).')
     t = timeit.Timer(stmt=stmt, setup=setup)
     print(f"{t.timeit(1)}s")
 
@@ -128,7 +128,7 @@ myNoddys = Noddy.objects()
 
     print("-" * 100)
     print(
-        'MongoEngine: Creating 10000 dictionaries (write_concern={"w": 0}, validate=False).'
+        'MongoNeo: Creating 10000 dictionaries (write_concern={"w": 0}, validate=False).'
     )
     t = timeit.Timer(stmt=stmt, setup=setup)
     print(f"{t.timeit(1)}s")
@@ -146,7 +146,7 @@ myNoddys = Noddy.objects()
 
     print("-" * 100)
     print(
-        'MongoEngine: Creating 10000 dictionaries (force_insert=True, write_concern={"w": 0}, validate=False).'
+        'MongoNeo: Creating 10000 dictionaries (force_insert=True, write_concern={"w": 0}, validate=False).'
     )
     t = timeit.Timer(stmt=stmt, setup=setup)
     print(f"{t.timeit(1)}s")

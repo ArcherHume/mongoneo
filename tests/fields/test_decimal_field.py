@@ -2,7 +2,7 @@ from decimal import Decimal
 
 import pytest
 
-from mongoengine import DecimalField, Document, ValidationError
+from mongoneo import DecimalField, Document, ValidationError
 from tests.utils import MongoDBTestCase
 
 

@@ -2,7 +2,7 @@ import re
 
 import pytest
 
-from mongoengine.base.utils import LazyRegexCompiler
+from mongoneo.base.utils import LazyRegexCompiler
 
 signal_output = []
 

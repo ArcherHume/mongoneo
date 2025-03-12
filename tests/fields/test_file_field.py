@@ -7,8 +7,8 @@ from io import BytesIO
 import gridfs
 import pytest
 
-from mongoengine import *
-from mongoengine.connection import get_db
+from mongoneo import *
+from mongoneo.connection import get_db
 
 try:
     from PIL import Image  # noqa: F401
@@ -21,7 +21,7 @@ from tests.utils import MongoDBTestCase
 
 require_pil = pytest.mark.skipif(not HAS_PIL, reason="PIL not installed")
 
-TEST_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "mongoengine.png")
+TEST_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "mongoneo.png")
 TEST_IMAGE2_PATH = os.path.join(os.path.dirname(__file__), "mongodb_leaf.png")
 
 

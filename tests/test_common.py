@@ -1,7 +1,7 @@
 import pytest
 
-from mongoengine import Document
-from mongoengine.common import _import_class
+from mongoneo import Document
+from mongoneo.common import _import_class
 
 
 class TestCommon:

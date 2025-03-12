@@ -1,8 +1,8 @@
 import datetime
 import unittest
 
-from mongoengine import *
-from mongoengine.pymongo_support import PYMONGO_VERSION
+from mongoneo import *
+from mongoneo.pymongo_support import PYMONGO_VERSION
 from tests.utils import MongoDBTestCase
 
 

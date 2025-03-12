@@ -3,7 +3,7 @@ from enum import Enum
 import pytest
 from bson import InvalidDocument
 
-from mongoengine import (
+from mongoneo import (
     DictField,
     Document,
     EnumField,

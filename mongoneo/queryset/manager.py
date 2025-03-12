@@ -1,6 +1,6 @@
 from functools import partial
 
-from mongoengine.queryset.queryset import QuerySet
+from mongoneo.queryset.queryset import QuerySet
 
 __all__ = ("queryset_manager", "QuerySetManager")
 
@@ -11,10 +11,10 @@ class QuerySetManager:
 
     Custom QuerySet Manager functions can extend this class and users can
     add extra queryset functionality.  Any custom manager methods must accept a
-    :class:`~mongoengine.Document` class as its first argument, and a
-    :class:`~mongoengine.queryset.QuerySet` as its second argument.
+    :class:`~mongoneo.Document` class as its first argument, and a
+    :class:`~mongoneo.queryset.QuerySet` as its second argument.
 
-    The method function should return a :class:`~mongoengine.queryset.QuerySet`
+    The method function should return a :class:`~mongoneo.queryset.QuerySet`
     , probably the same one that was passed in, but modified in some way.
     """
 
@@ -49,10 +49,10 @@ class QuerySetManager:
 
 def queryset_manager(func):
     """Decorator that allows you to define custom QuerySet managers on
-    :class:`~mongoengine.Document` classes. The manager must be a function that
-    accepts a :class:`~mongoengine.Document` class as its first argument, and a
-    :class:`~mongoengine.queryset.QuerySet` as its second argument. The method
-    function should return a :class:`~mongoengine.queryset.QuerySet`, probably
+    :class:`~mongoneo.Document` classes. The manager must be a function that
+    accepts a :class:`~mongoneo.Document` class as its first argument, and a
+    :class:`~mongoneo.queryset.QuerySet` as its second argument. The method
+    function should return a :class:`~mongoneo.queryset.QuerySet`, probably
     the same one that was passed in, but modified in some way.
     """
     return QuerySetManager(func)

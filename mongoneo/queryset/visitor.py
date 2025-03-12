@@ -1,8 +1,8 @@
 import copy
 import warnings
 
-from mongoengine.errors import InvalidQueryError
-from mongoengine.queryset import transform
+from mongoneo.errors import InvalidQueryError
+from mongoneo.queryset import transform
 
 __all__ = ("Q", "QNode")
 

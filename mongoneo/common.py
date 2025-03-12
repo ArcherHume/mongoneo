@@ -5,16 +5,16 @@ _field_list_cache = []
 def _import_class(cls_name):
     """Cache mechanism for imports.
 
-    Due to complications of circular imports mongoengine needs to do lots of
+    Due to complications of circular imports mongoneo needs to do lots of
     inline imports in functions.  This is inefficient as classes are
-    imported repeated throughout the mongoengine code.  This is
+    imported repeated throughout the mongoneo code.  This is
     compounded by some recursive functions requiring inline imports.
 
-    :mod:`mongoengine.common` provides a single point to import all these
+    :mod:`mongoneo.common` provides a single point to import all these
     classes.  Circular imports aren't an issue as it dynamically imports the
     class when first needed.  Subsequent calls to the
-    :func:`~mongoengine.common._import_class` can then directly retrieve the
-    class from the :data:`mongoengine.common._class_registry_cache`.
+    :func:`~mongoneo.common._import_class` can then directly retrieve the
+    class from the :data:`mongoneo.common._class_registry_cache`.
     """
     if cls_name in _class_registry_cache:
         return _class_registry_cache.get(cls_name)
@@ -28,10 +28,10 @@ def _import_class(cls_name):
 
     # Field Classes
     if not _field_list_cache:
-        from mongoengine.fields import __all__ as fields
+        from mongoneo.fields import __all__ as fields
 
         _field_list_cache.extend(fields)
-        from mongoengine.base.fields import __all__ as fields
+        from mongoneo.base.fields import __all__ as fields
 
         _field_list_cache.extend(fields)
 
@@ -40,19 +40,19 @@ def _import_class(cls_name):
     deref_classes = ("DeReference",)
 
     if cls_name == "BaseDocument":
-        from mongoengine.base import document as module
+        from mongoneo.base import document as module
 
         import_classes = ["BaseDocument"]
     elif cls_name in doc_classes:
-        from mongoengine import document as module
+        from mongoneo import document as module
 
         import_classes = doc_classes
     elif cls_name in field_classes:
-        from mongoengine import fields as module
+        from mongoneo import fields as module
 
         import_classes = field_classes
     elif cls_name in deref_classes:
-        from mongoengine import dereference as module
+        from mongoneo import dereference as module
 
         import_classes = deref_classes
     else:

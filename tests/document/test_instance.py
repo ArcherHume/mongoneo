@@ -11,12 +11,12 @@ import pytest
 from bson import DBRef, ObjectId
 from pymongo.errors import DuplicateKeyError
 
-from mongoengine import *
-from mongoengine import signals
-from mongoengine.base import _DocumentRegistry
-from mongoengine.connection import get_db
-from mongoengine.context_managers import query_counter, switch_db
-from mongoengine.errors import (
+from mongoneo import *
+from mongoneo import signals
+from mongoneo.base import _DocumentRegistry
+from mongoneo.connection import get_db
+from mongoneo.context_managers import query_counter, switch_db
+from mongoneo.errors import (
     FieldDoesNotExist,
     InvalidDocumentError,
     InvalidQueryError,
@@ -24,16 +24,16 @@ from mongoengine.errors import (
     NotUniqueError,
     SaveConditionError,
 )
-from mongoengine.mongodb_support import (
+from mongoneo.mongodb_support import (
     MONGODB_34,
     MONGODB_36,
     get_mongodb_version,
 )
-from mongoengine.pymongo_support import (
+from mongoneo.pymongo_support import (
     PYMONGO_VERSION,
     list_collection_names,
 )
-from mongoengine.queryset import NULLIFY, Q
+from mongoneo.queryset import NULLIFY, Q
 from tests import fixtures
 from tests.fixtures import (
     PickleDynamicEmbedded,
@@ -49,7 +49,7 @@ from tests.utils import (
     requires_mongodb_gte_44,
 )
 
-TEST_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "../fields/mongoengine.png")
+TEST_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "../fields/mongoneo.png")
 
 
 class TestDocumentInstance(MongoDBTestCase):
@@ -148,7 +148,7 @@ class TestDocumentInstance(MongoDBTestCase):
     def test_capped_collection_no_max_size_problems(self):
         """Ensure that capped collections with odd max_size work properly.
         MongoDB rounds up max_size to next multiple of 256, recreating a doc
-        with the same spec failed in mongoengine <0.10
+        with the same spec failed in mongoneo <0.10
         """
 
         class Log(Document):
@@ -487,7 +487,7 @@ class TestDocumentInstance(MongoDBTestCase):
         CMD_QUERY_KEY = "command" if mongo_db >= MONGODB_36 else "query"
         with query_counter() as q:
             doc.reload()
-            query_op = q.db.system.profile.find({"ns": "mongoenginetest.animal"})[0]
+            query_op = q.db.system.profile.find({"ns": "mongoneotest.animal"})[0]
             assert set(query_op[CMD_QUERY_KEY]["filter"].keys()) == {
                 "_id",
                 "superphylum",
@@ -505,7 +505,7 @@ class TestDocumentInstance(MongoDBTestCase):
         CMD_QUERY_KEY = "command" if mongo_db >= MONGODB_36 else "query"
         with query_counter() as q:
             doc.reload()
-            query_op = q.db.system.profile.find({"ns": "mongoenginetest.person"})[0]
+            query_op = q.db.system.profile.find({"ns": "mongoneotest.person"})[0]
             assert set(query_op[CMD_QUERY_KEY]["filter"].keys()) == {"_id", "country"}
 
     def test_reload_sharded_nested(self):
@@ -541,7 +541,7 @@ class TestDocumentInstance(MongoDBTestCase):
         with query_counter() as q:
             doc.name = "Cat"
             doc.save()
-            query_op = q.db.system.profile.find({"ns": "mongoenginetest.animal"})[0]
+            query_op = q.db.system.profile.find({"ns": "mongoneotest.animal"})[0]
             assert query_op["op"] == "update"
             if mongo_db <= MONGODB_34:
                 assert set(query_op["query"].keys()) == {"_id", "is_mammal"}
@@ -566,7 +566,7 @@ class TestDocumentInstance(MongoDBTestCase):
 
         with query_counter() as q:
             doc.save()
-            query_op = q.db.system.profile.find({"ns": "mongoenginetest.animal"})[0]
+            query_op = q.db.system.profile.find({"ns": "mongoneotest.animal"})[0]
             assert query_op["op"] == "command"
             assert query_op["command"]["findAndModify"] == "animal"
             assert set(query_op["command"]["query"].keys()) == {"_id", "is_mammal"}
@@ -1319,7 +1319,7 @@ class TestDocumentInstance(MongoDBTestCase):
         assert not w2.toggle
         assert w2.count == 2
 
-        # save_condition uses mongoengine-style operator syntax
+        # save_condition uses mongoneo-style operator syntax
         flip(w1)
         w1.save(save_condition={"count__lt": w1.count})
         w1.reload()
@@ -1504,7 +1504,7 @@ class TestDocumentInstance(MongoDBTestCase):
             map_field = MapField(IntField(), default=lambda: {"simple": 1})
             decimal_field = DecimalField(default=1.0)
             complex_datetime_field = ComplexDateTimeField(default=datetime.now)
-            url_field = URLField(default="http://mongoengine.org")
+            url_field = URLField(default="http://mongoneo.org")
             dynamic_field = DynamicField(default=1)
             generic_reference_field = GenericReferenceField(
                 default=lambda: Simple().save()
@@ -1745,12 +1745,12 @@ class TestDocumentInstance(MongoDBTestCase):
         o2 = Organization(name="o2").save()
 
         u1 = User(name="Ross", orgs=[o1, o2]).save()
-        f1 = Feed(name="MongoEngine").save()
+        f1 = Feed(name="MongoNeo").save()
 
         sub = UserSubscription(user=u1, feed=f1).save()
 
         user = User.objects.first()
-        # Even if stored as ObjectId's internally mongoengine uses DBRefs
+        # Even if stored as ObjectId's internally mongoneo uses DBRefs
         # As ObjectId's aren't automatically dereferenced
         assert isinstance(user._data["orgs"][0], DBRef)
         assert isinstance(user.orgs[0], Organization)
@@ -1898,9 +1898,9 @@ class TestDocumentInstance(MongoDBTestCase):
         if PYMONGO_VERSION >= (4, 1):
             with db_ops_tracker() as q:
                 _ = AggPerson.objects.comment(comment).update_one(name="something")
-                query_op = q.db.system.profile.find(
-                    {"ns": "mongoenginetest.agg_person"}
-                )[0]
+                query_op = q.db.system.profile.find({"ns": "mongoneotest.agg_person"})[
+                    0
+                ]
                 CMD_QUERY_KEY = "command" if mongo_ver >= MONGODB_36 else "query"
                 assert "hint" not in query_op[CMD_QUERY_KEY]
                 assert query_op[CMD_QUERY_KEY]["comment"] == comment
@@ -1908,7 +1908,7 @@ class TestDocumentInstance(MongoDBTestCase):
 
         with db_ops_tracker() as q:
             _ = AggPerson.objects.hint(index_name).update_one(name="something")
-            query_op = q.db.system.profile.find({"ns": "mongoenginetest.agg_person"})[0]
+            query_op = q.db.system.profile.find({"ns": "mongoneotest.agg_person"})[0]
             CMD_QUERY_KEY = "command" if mongo_ver >= MONGODB_36 else "query"
 
             assert query_op[CMD_QUERY_KEY]["hint"] == {"$hint": index_name}
@@ -1917,7 +1917,7 @@ class TestDocumentInstance(MongoDBTestCase):
 
         with db_ops_tracker() as q:
             _ = AggPerson.objects.collation(base).update_one(name="something")
-            query_op = q.db.system.profile.find({"ns": "mongoenginetest.agg_person"})[0]
+            query_op = q.db.system.profile.find({"ns": "mongoneotest.agg_person"})[0]
             CMD_QUERY_KEY = "command" if mongo_ver >= MONGODB_36 else "query"
             assert "hint" not in query_op[CMD_QUERY_KEY]
             assert "comment" not in query_op[CMD_QUERY_KEY]
@@ -1953,9 +1953,9 @@ class TestDocumentInstance(MongoDBTestCase):
         if PYMONGO_VERSION >= (4, 1):
             with db_ops_tracker() as q:
                 _ = AggPerson.objects().comment(comment).delete()
-                query_op = q.db.system.profile.find(
-                    {"ns": "mongoenginetest.agg_person"}
-                )[0]
+                query_op = q.db.system.profile.find({"ns": "mongoneotest.agg_person"})[
+                    0
+                ]
                 CMD_QUERY_KEY = "command" if mongo_ver >= MONGODB_36 else "query"
                 assert "hint" not in query_op[CMD_QUERY_KEY]
                 assert query_op[CMD_QUERY_KEY]["comment"] == comment
@@ -1963,7 +1963,7 @@ class TestDocumentInstance(MongoDBTestCase):
 
         with db_ops_tracker() as q:
             _ = AggPerson.objects.hint(index_name).delete()
-            query_op = q.db.system.profile.find({"ns": "mongoenginetest.agg_person"})[0]
+            query_op = q.db.system.profile.find({"ns": "mongoneotest.agg_person"})[0]
             CMD_QUERY_KEY = "command" if mongo_ver >= MONGODB_36 else "query"
 
             assert query_op[CMD_QUERY_KEY]["hint"] == {"$hint": index_name}
@@ -1972,7 +1972,7 @@ class TestDocumentInstance(MongoDBTestCase):
 
         with db_ops_tracker() as q:
             _ = AggPerson.objects.collation(base).delete()
-            query_op = q.db.system.profile.find({"ns": "mongoenginetest.agg_person"})[0]
+            query_op = q.db.system.profile.find({"ns": "mongoneotest.agg_person"})[0]
             CMD_QUERY_KEY = "command" if mongo_ver >= MONGODB_36 else "query"
             assert "hint" not in query_op[CMD_QUERY_KEY]
             assert "comment" not in query_op[CMD_QUERY_KEY]
@@ -2274,7 +2274,7 @@ class TestDocumentInstance(MongoDBTestCase):
                 }
             )
 
-        # Tests for issue #1438: https://github.com/MongoEngine/mongoengine/issues/1438
+        # Tests for issue #1438: https://github.com/MongoNeo/mongoneo/issues/1438
         with pytest.raises(ValueError):
             Word._from_son("this is not a valid SON dict")
 
@@ -2882,11 +2882,11 @@ class TestDocumentInstance(MongoDBTestCase):
 
     def test_db_alias_tests(self):
         """DB Alias tests."""
-        # mongoenginetest - Is default connection alias from setUp()
+        # mongoneotest - Is default connection alias from setUp()
         # Register Aliases
-        register_connection("testdb-1", "mongoenginetest2")
-        register_connection("testdb-2", "mongoenginetest3")
-        register_connection("testdb-3", "mongoenginetest4")
+        register_connection("testdb-1", "mongoneotest2")
+        register_connection("testdb-2", "mongoneotest3")
+        register_connection("testdb-3", "mongoneotest4")
 
         class User(Document):
             name = StringField()
@@ -2942,7 +2942,7 @@ class TestDocumentInstance(MongoDBTestCase):
     def test_db_alias_overrides(self):
         """Test db_alias can be overriden."""
         # Register a connection with db_alias testdb-2
-        register_connection("testdb-2", "mongoenginetest2")
+        register_connection("testdb-2", "mongoneotest2")
 
         class A(Document):
             """Uses default db_alias"""
@@ -2958,12 +2958,12 @@ class TestDocumentInstance(MongoDBTestCase):
         A.objects.all()
 
         assert "testdb-2" == B._meta.get("db_alias")
-        assert "mongoenginetest" == A._get_collection().database.name
-        assert "mongoenginetest2" == B._get_collection().database.name
+        assert "mongoneotest" == A._get_collection().database.name
+        assert "mongoneotest2" == B._get_collection().database.name
 
     def test_db_alias_propagates(self):
         """db_alias propagates?"""
-        register_connection("testdb-1", "mongoenginetest2")
+        register_connection("testdb-1", "mongoneotest2")
 
         class A(Document):
             name = StringField()
@@ -3063,7 +3063,7 @@ class TestDocumentInstance(MongoDBTestCase):
             assert custom_qs.count() == 2
 
     def test_switch_db_instance(self):
-        register_connection("testdb-1", "mongoenginetest2")
+        register_connection("testdb-1", "mongoneotest2")
 
         class Group(Document):
             name = StringField()
@@ -3591,7 +3591,7 @@ class TestDocumentInstance(MongoDBTestCase):
         fields that are part of its shard key (note that this is not permitted
         on docs that are already persisted).
 
-        See https://github.com/mongoengine/mongoengine/issues/771 for details.
+        See https://github.com/mongoneo/mongoneo/issues/771 for details.
         """
 
         class Person(Document):
@@ -3641,7 +3641,7 @@ class TestDocumentInstance(MongoDBTestCase):
         assert saved_p.name == "name"
 
     def test_from_json_created_false_with_an_id(self):
-        """See https://github.com/mongoengine/mongoengine/issues/1854"""
+        """See https://github.com/mongoneo/mongoneo/issues/1854"""
 
         class Person(Document):
             name = StringField()

@@ -1,9 +1,9 @@
 import pytest
 from bson import InvalidDocument
 
-from mongoengine import *
-from mongoengine.base import BaseDict
-from mongoengine.mongodb_support import (
+from mongoneo import *
+from mongoneo.base import BaseDict
+from mongoneo.mongodb_support import (
     MONGODB_36,
     get_mongodb_version,
 )

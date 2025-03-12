@@ -4,7 +4,7 @@ from copy import deepcopy
 import pytest
 from bson import ObjectId
 
-from mongoengine import (
+from mongoneo import (
     Document,
     EmbeddedDocument,
     EmbeddedDocumentField,

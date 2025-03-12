@@ -1,6 +1,6 @@
 import pytest
 
-from mongoengine import Document, EmailField, ValidationError
+from mongoneo import Document, EmailField, ValidationError
 from tests.utils import MongoDBTestCase
 
 

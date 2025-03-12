@@ -2,7 +2,7 @@ import time
 import unittest
 from datetime import datetime, timedelta
 
-from mongoengine import (
+from mongoneo import (
     DateTimeField,
     Document,
     FloatField,
@@ -10,13 +10,13 @@ from mongoengine import (
     connect,
     get_db,
 )
-from mongoengine.connection import disconnect
+from mongoneo.connection import disconnect
 from tests.utils import requires_mongodb_gte_50
 
 
 class TestTimeSeriesCollections(unittest.TestCase):
     def setUp(self):
-        connect(db="mongoenginetest")
+        connect(db="mongoneotest")
         self.db = get_db()
 
         class SensorData(Document):

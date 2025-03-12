@@ -1,22 +1,22 @@
 from bson import SON, DBRef
 
-from mongoengine.base import (
+from mongoneo.base import (
     BaseDict,
     BaseList,
     EmbeddedDocumentList,
     TopLevelDocumentMetaclass,
     _DocumentRegistry,
 )
-from mongoengine.base.datastructures import LazyReference
-from mongoengine.connection import _get_session, get_db
-from mongoengine.document import Document, EmbeddedDocument
-from mongoengine.fields import (
+from mongoneo.base.datastructures import LazyReference
+from mongoneo.connection import _get_session, get_db
+from mongoneo.document import Document, EmbeddedDocument
+from mongoneo.fields import (
     DictField,
     ListField,
     MapField,
     ReferenceField,
 )
-from mongoengine.queryset import QuerySet
+from mongoneo.queryset import QuerySet
 
 
 class DeReference:
@@ -28,9 +28,9 @@ class DeReference:
         :param items: The iterable (dict, list, queryset) to be dereferenced.
         :param max_depth: The maximum depth to recurse to
         :param instance: The owning instance used for tracking changes by
-            :class:`~mongoengine.base.ComplexBaseField`
+            :class:`~mongoneo.base.ComplexBaseField`
         :param name: The name of the field, used for tracking changes by
-            :class:`~mongoengine.base.ComplexBaseField`
+            :class:`~mongoneo.base.ComplexBaseField`
         :param get: A boolean determining if being called by __get__
         """
         if items is None or isinstance(items, str):
@@ -215,9 +215,9 @@ class DeReference:
         :param items: The iterable (dict, list, queryset)
         :param depth: The current depth of recursion
         :param instance: The owning instance used for tracking changes by
-            :class:`~mongoengine.base.ComplexBaseField`
+            :class:`~mongoneo.base.ComplexBaseField`
         :param name: The name of the field, used for tracking changes by
-            :class:`~mongoengine.base.ComplexBaseField`
+            :class:`~mongoneo.base.ComplexBaseField`
         """
         if not items:
             if isinstance(items, (BaseDict, BaseList)):

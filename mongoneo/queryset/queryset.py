@@ -1,5 +1,5 @@
-from mongoengine.errors import OperationError
-from mongoengine.queryset.base import (
+from mongoneo.errors import OperationError
+from mongoneo.queryset.base import (
     CASCADE,
     DENY,
     DO_NOTHING,
@@ -27,7 +27,7 @@ class QuerySet(BaseQuerySet):
     """The default queryset, that builds queries and handles a set of results
     returned from a query.
 
-    Wraps a MongoDB cursor, providing :class:`~mongoengine.Document` objects as
+    Wraps a MongoDB cursor, providing :class:`~mongoneo.Document` objects as
     the results.
     """
 

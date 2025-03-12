@@ -1,15 +1,15 @@
 import itertools
 import warnings
 
-from mongoengine.base.common import _DocumentRegistry
-from mongoengine.base.fields import (
+from mongoneo.base.common import _DocumentRegistry
+from mongoneo.base.fields import (
     BaseField,
     ComplexBaseField,
     ObjectIdField,
 )
-from mongoengine.common import _import_class
-from mongoengine.errors import InvalidDocumentError
-from mongoengine.queryset import (
+from mongoneo.common import _import_class
+from mongoneo.errors import InvalidDocumentError
+from mongoneo.queryset import (
     DO_NOTHING,
     DoesNotExist,
     MultipleObjectsReturned,

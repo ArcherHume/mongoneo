@@ -1,14 +1,14 @@
 # Base module is split into several files for convenience. Files inside of
 # this module should import from a specific submodule (e.g.
-# `from mongoengine.base.document import BaseDocument`), but all of the
+# `from mongoneo.base.document import BaseDocument`), but all of the
 # other modules should import directly from the top-level module (e.g.
-# `from mongoengine.base import BaseDocument`). This approach is cleaner and
+# `from mongoneo.base import BaseDocument`). This approach is cleaner and
 # also helps with cyclical import errors.
-from mongoengine.base.common import *
-from mongoengine.base.datastructures import *
-from mongoengine.base.document import *
-from mongoengine.base.fields import *
-from mongoengine.base.metaclasses import *
+from mongoneo.base.common import *
+from mongoneo.base.datastructures import *
+from mongoneo.base.document import *
+from mongoneo.base.fields import *
+from mongoneo.base.metaclasses import *
 
 __all__ = (
     # common

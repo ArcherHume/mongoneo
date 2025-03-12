@@ -1,6 +1,6 @@
 import pickle
 
-from mongoengine import Document, IntField, StringField
+from mongoneo import Document, IntField, StringField
 from tests.utils import MongoDBTestCase
 
 
@@ -12,7 +12,7 @@ class Person(Document):
 class TestQuerysetPickable(MongoDBTestCase):
     """
     Test for adding pickling support for QuerySet instances
-    See issue https://github.com/MongoEngine/mongoengine/issues/442
+    See issue https://github.com/MongoNeo/mongoneo/issues/442
     """
 
     def setUp(self):

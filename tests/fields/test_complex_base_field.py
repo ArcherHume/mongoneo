@@ -1,6 +1,6 @@
 import pytest
 
-from mongoengine.base import ComplexBaseField
+from mongoneo.base import ComplexBaseField
 from tests.utils import MongoDBTestCase
 
 

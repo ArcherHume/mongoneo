@@ -3,7 +3,7 @@ import uuid
 import pytest
 from bson import Binary
 
-from mongoengine import *
+from mongoneo import *
 from tests.utils import MongoDBTestCase
 
 BIN_VALUE = "\xa9\xf3\x8d(\xd7\x03\x84\xb4k[\x0f\xe3\xa2\x19\x85p[J\xa3\xd2>\xde\xe6\x87\xb1\x7f\xc6\xe6\xd9r\x18\xf5".encode(

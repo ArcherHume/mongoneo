@@ -6,7 +6,7 @@ import pymongo
 from bson import binary, json_util
 from pymongo.errors import OperationFailure
 
-from mongoengine import connection
+from mongoneo import connection
 
 PYMONGO_VERSION = tuple(pymongo.version_tuple[:2])
 

@@ -1,7 +1,7 @@
 import pytest
 from bson import SON, DBRef
 
-from mongoengine import *
+from mongoneo import *
 from tests.utils import MongoDBTestCase
 
 
@@ -150,7 +150,7 @@ class TestReferenceField(MongoDBTestCase):
         mongodb = Product(name="MongoDB", company=ten_gen)
         mongodb.save()
 
-        me = Product(name="MongoEngine")
+        me = Product(name="MongoNeo")
         me.save()
 
         obj = Product.objects(company=ten_gen).first()

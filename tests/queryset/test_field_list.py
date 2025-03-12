@@ -2,8 +2,8 @@ import unittest
 
 import pytest
 
-from mongoengine import *
-from mongoengine.queryset import QueryFieldList
+from mongoneo import *
+from mongoneo.queryset import QueryFieldList
 
 
 class TestQueryFieldList:
@@ -68,7 +68,7 @@ class TestQueryFieldList:
 
 class TestOnlyExcludeAll(unittest.TestCase):
     def setUp(self):
-        connect(db="mongoenginetest")
+        connect(db="mongoneotest")
 
         class Person(Document):
             name = StringField()

@@ -1,6 +1,6 @@
 import warnings
 
-from mongoengine.errors import NotRegistered
+from mongoneo.errors import NotRegistered
 
 __all__ = ("UPDATE_OPERATORS", "_DocumentRegistry")
 
@@ -29,7 +29,7 @@ _document_registry = {}
 
 class _DocumentRegistry:
     """Wrapper for the document registry (providing a singleton pattern).
-    This is part of MongoEngine's internals, not meant to be used directly by end-users
+    This is part of MongoNeo's internals, not meant to be used directly by end-users
     """
 
     @staticmethod
@@ -65,7 +65,7 @@ class _DocumentRegistry:
             and ExistingDocCls.__module__ != DocCls.__module__
         ):
             # A sign that a codebase may have named two different classes with the same name accidentally,
-            # this could cause issues with dereferencing because MongoEngine makes the assumption that a Document
+            # this could cause issues with dereferencing because MongoNeo makes the assumption that a Document
             # class name is unique.
             warnings.warn(
                 f"Multiple Document classes named `{DocCls._class_name}` were registered, "

@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from mongoengine import get_version
+from mongoneo import get_version
 from tests import DOCS_DIR
 
 

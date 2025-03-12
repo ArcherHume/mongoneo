@@ -3,8 +3,8 @@ import unittest
 import pytest
 from bson.son import SON
 
-from mongoengine import *
-from mongoengine.queryset import Q, transform
+from mongoneo import *
+from mongoneo.queryset import Q, transform
 from tests.utils import MongoDBTestCase
 
 

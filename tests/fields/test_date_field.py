@@ -7,7 +7,7 @@ try:
 except ImportError:
     dateutil = None
 
-from mongoengine import *
+from mongoneo import *
 from tests.utils import MongoDBTestCase
 
 

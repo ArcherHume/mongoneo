@@ -9,23 +9,23 @@ from bson import DBRef, ObjectId
 from pymongo.read_preferences import ReadPreference
 from pymongo.results import UpdateResult
 
-from mongoengine import *
-from mongoengine.connection import get_db
-from mongoengine.context_managers import query_counter, switch_db
-from mongoengine.errors import InvalidQueryError
-from mongoengine.mongodb_support import (
+from mongoneo import *
+from mongoneo.connection import get_db
+from mongoneo.context_managers import query_counter, switch_db
+from mongoneo.errors import InvalidQueryError
+from mongoneo.mongodb_support import (
     MONGODB_36,
     get_mongodb_version,
 )
-from mongoengine.pymongo_support import PYMONGO_VERSION
-from mongoengine.queryset import (
+from mongoneo.pymongo_support import PYMONGO_VERSION
+from mongoneo.queryset import (
     DoesNotExist,
     MultipleObjectsReturned,
     QuerySet,
     QuerySetManager,
     queryset_manager,
 )
-from mongoengine.queryset.base import BaseQuerySet
+from mongoneo.queryset.base import BaseQuerySet
 from tests.utils import (
     db_ops_tracker,
     get_as_pymongo,
@@ -43,8 +43,8 @@ def get_key_compat(mongo_ver):
 
 class TestQueryset(unittest.TestCase):
     def setUp(self):
-        connect(db="mongoenginetest")
-        connect(db="mongoenginetest2", alias="test2")
+        connect(db="mongoneotest")
+        connect(db="mongoneotest2", alias="test2")
 
         class PersonMeta(EmbeddedDocument):
             weight = IntField()
@@ -805,8 +805,8 @@ class TestQueryset(unittest.TestCase):
         comm2 = Comment(content="kind of funny", name="Mark P", vote=0)
 
         Post(
-            title="Fun with MongoEngine",
-            tags=["mongodb", "mongoengine"],
+            title="Fun with MongoNeo",
+            tags=["mongodb", "mongoneo"],
             comments=[comm1, comm2],
         ).save()
 
@@ -2336,8 +2336,8 @@ class TestQueryset(unittest.TestCase):
         post.reload()
         assert post.slug == "When test test it"
 
-    def test_combination_of_mongoengine_and__raw__(self):
-        """Ensure that the '__raw__' update/query works in combination with mongoengine syntax correctly."""
+    def test_combination_of_mongoneo_and__raw__(self):
+        """Ensure that the '__raw__' update/query works in combination with mongoneo syntax correctly."""
 
         class BlogPost(Document):
             slug = StringField()
@@ -2923,7 +2923,7 @@ class TestQueryset(unittest.TestCase):
 
         BlogPost.drop_collection()
 
-        post1 = BlogPost(title="Post #1", tags=["mongodb", "mongoengine"])
+        post1 = BlogPost(title="Post #1", tags=["mongodb", "mongoneo"])
         post2 = BlogPost(title="Post #2", tags=["django", "mongodb"])
         post3 = BlogPost(title="Post #3", tags=["hitchcock films"])
 
@@ -3795,7 +3795,7 @@ class TestQueryset(unittest.TestCase):
             assert list(qs1) == list(qs2)
 
     def test_distinct_handles_references_to_alias(self):
-        register_connection("testdb", "mongoenginetest2")
+        register_connection("testdb", "mongoneotest2")
 
         class Foo(Document):
             bar = ReferenceField("Bar")
@@ -5207,7 +5207,7 @@ class TestQueryset(unittest.TestCase):
             map_field = MapField(IntField(), default=lambda: {"simple": 1})
             decimal_field = DecimalField(default=1.0)
             complex_datetime_field = ComplexDateTimeField(default=datetime.datetime.now)
-            url_field = URLField(default="http://mongoengine.org")
+            url_field = URLField(default="http://mongoneo.org")
             dynamic_field = DynamicField(default=1)
             generic_reference_field = GenericReferenceField(
                 default=lambda: Simple().save()
@@ -5499,7 +5499,7 @@ class TestQueryset(unittest.TestCase):
             if platform.python_implementation() != "PyPy":
                 # PyPy evaluates __len__ when iterating with list comprehensions while CPython does not.
                 # This may be a bug in PyPy (PyPy/#1802) but it does not affect
-                # the behavior of MongoEngine.
+                # the behavior of MongoNeo.
                 assert people._len is None
             assert q == 1
 

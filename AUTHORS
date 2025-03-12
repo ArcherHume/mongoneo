@@ -1,4 +1,4 @@
-The PRIMARY AUTHORS are (and/or have been):
+The PRIMARY AUTHORS of MongoEngine are (and/or have been):
 
 Ross Lawley <ross.lawley@gmail.com>
 Harry Marr <harry@hmarr.com>
@@ -10,10 +10,13 @@ Wilson Júnior <wilsonpjunior@gmail.com>
 Dan Crosta https://github.com/dcrosta
 Laine Herron https://github.com/LaineHerron
 
+The PRIMARY AUTHOR of MongoNeo is:
+Archer Hume <archer@hume.email>
+
 CONTRIBUTORS
 
 Derived from the git logs, inevitably incomplete but all of whom and others
-have submitted patches, reported bugs and generally helped make MongoEngine
+have submitted patches, reported bugs and generally helped make MongoNeo (MongoEngine)
 that much better:
 
  * blackbrrr

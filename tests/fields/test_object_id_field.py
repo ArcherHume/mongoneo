@@ -1,7 +1,7 @@
 import pytest
 from bson import ObjectId
 
-from mongoengine import Document, ObjectIdField, ValidationError
+from mongoneo import Document, ObjectIdField, ValidationError
 from tests.utils import MongoDBTestCase, get_as_pymongo
 
 

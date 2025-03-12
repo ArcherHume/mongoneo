@@ -2,18 +2,18 @@ import unittest
 
 from bson import DBRef, ObjectId
 
-from mongoengine import *
-from mongoengine.context_managers import query_counter
+from mongoneo import *
+from mongoneo.context_managers import query_counter
 
 
 class FieldTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.db = connect(db="mongoenginetest")
+        cls.db = connect(db="mongoneotest")
 
     @classmethod
     def tearDownClass(cls):
-        cls.db.drop_database("mongoenginetest")
+        cls.db.drop_database("mongoneotest")
 
     def test_list_item_dereference(self):
         """Ensure that DBRef items in ListFields are dereferenced."""
@@ -1278,9 +1278,9 @@ class FieldTest(unittest.TestCase):
             assert q == 2
 
     def test_objectid_reference_across_databases(self):
-        # mongoenginetest - Is default connection alias from setUp()
+        # mongoneotest - Is default connection alias from setUp()
         # Register Aliases
-        register_connection("testdb-1", "mongoenginetest2")
+        register_connection("testdb-1", "mongoneotest2")
 
         class User(Document):
             name = StringField()
@@ -1295,7 +1295,7 @@ class FieldTest(unittest.TestCase):
         Book.drop_collection()
 
         user = User(name="Ross").save()
-        Book(name="MongoEngine for pros", author=user).save()
+        Book(name="MongoNeo for pros", author=user).save()
 
         # Can't use query_counter across databases - so test the _data object
         book = Book.objects.first()

@@ -5,14 +5,14 @@ import unittest
 import pytest
 from bson import ObjectId
 
-from mongoengine import *
-from mongoengine.errors import InvalidQueryError
-from mongoengine.queryset import Q
+from mongoneo import *
+from mongoneo.errors import InvalidQueryError
+from mongoneo.queryset import Q
 
 
 class TestQ(unittest.TestCase):
     def setUp(self):
-        connect(db="mongoenginetest")
+        connect(db="mongoneotest")
 
         class Person(Document):
             name = StringField()
@@ -42,7 +42,7 @@ class TestQ(unittest.TestCase):
 
     def test_q_with_dbref(self):
         """Ensure Q objects handle DBRefs correctly"""
-        connect(db="mongoenginetest")
+        connect(db="mongoneotest")
 
         class User(Document):
             pass

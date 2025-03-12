@@ -4,9 +4,9 @@ import pymongo
 from bson import SON, ObjectId
 from bson.dbref import DBRef
 
-from mongoengine.base import UPDATE_OPERATORS
-from mongoengine.common import _import_class
-from mongoengine.errors import InvalidQueryError
+from mongoneo.base import UPDATE_OPERATORS
+from mongoneo.common import _import_class
+from mongoneo.errors import InvalidQueryError
 
 __all__ = ("query", "update", "STRING_OPERATORS")
 
@@ -288,7 +288,7 @@ def update(_doc_cls=None, **update):
             # Allow to escape operator-like field name by __
             # e.g. in the case of an embedded foo.type field
             # Doc.objects().update(set__foo__type="bar")
-            # see https://github.com/MongoEngine/mongoengine/pull/1351
+            # see https://github.com/MongoNeo/mongoneo/pull/1351
             if parts[-1] == "":
                 match = parts.pop()  # e.g. pop last '__' from set__foo__type__
 

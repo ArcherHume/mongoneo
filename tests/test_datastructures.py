@@ -2,8 +2,8 @@ import unittest
 
 import pytest
 
-from mongoengine import Document
-from mongoengine.base.datastructures import (
+from mongoneo import Document
+from mongoneo.base.datastructures import (
     BaseDict,
     BaseList,
     StrictDict,

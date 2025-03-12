@@ -1,14 +1,14 @@
 import unittest
 
-from mongoengine import *
-from mongoengine.connection import get_db
-from mongoengine.pymongo_support import list_collection_names
-from mongoengine.queryset import NULLIFY, PULL
+from mongoneo import *
+from mongoneo.connection import get_db
+from mongoneo.pymongo_support import list_collection_names
+from mongoneo.queryset import NULLIFY, PULL
 
 
 class TestClassMethods(unittest.TestCase):
     def setUp(self):
-        connect(db="mongoenginetest")
+        connect(db="mongoneotest")
         self.db = get_db()
 
         class Person(Document):

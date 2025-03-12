@@ -1,9 +1,9 @@
-from mongoengine.errors import *
-from mongoengine.queryset.field_list import *
-from mongoengine.queryset.manager import *
-from mongoengine.queryset.queryset import *
-from mongoengine.queryset.transform import *
-from mongoengine.queryset.visitor import *
+from mongoneo.errors import *
+from mongoneo.queryset.field_list import *
+from mongoneo.queryset.manager import *
+from mongoneo.queryset.queryset import *
+from mongoneo.queryset.transform import *
+from mongoneo.queryset.visitor import *
 
 # Expose just the public subset of all imported objects and constants.
 __all__ = (

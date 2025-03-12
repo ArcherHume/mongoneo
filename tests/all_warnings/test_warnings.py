@@ -7,12 +7,12 @@ top level and called first by the test suite.
 import unittest
 import warnings
 
-from mongoengine import *
+from mongoneo import *
 
 
 class TestAllWarnings(unittest.TestCase):
     def setUp(self):
-        connect(db="mongoenginetest")
+        connect(db="mongoneotest")
         self.warning_list = []
         self.showwarning_default = warnings.showwarning
         warnings.showwarning = self.append_to_warning_list

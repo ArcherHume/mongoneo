@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pytest
 
-from mongoengine import *
+from mongoneo import *
 from tests.utils import MongoDBTestCase
 
 

@@ -15,8 +15,8 @@ from pymongo.errors import (
 )
 from pymongo.read_preferences import Secondary
 
-import mongoengine.connection
-from mongoengine import (
+import mongoneo.connection
+from mongoneo import (
     DateTimeField,
     Document,
     StringField,
@@ -24,7 +24,7 @@ from mongoengine import (
     disconnect_all,
     register_connection,
 )
-from mongoengine.connection import (
+from mongoneo.connection import (
     DEFAULT_DATABASE_NAME,
     ConnectionFailure,
     _get_connection_settings,
@@ -32,7 +32,7 @@ from mongoengine.connection import (
     get_connection,
     get_db,
 )
-from mongoengine.pymongo_support import PYMONGO_VERSION
+from mongoneo.pymongo_support import PYMONGO_VERSION
 
 
 def random_str():
@@ -53,27 +53,27 @@ class ConnectionTest(unittest.TestCase):
         disconnect_all()
 
     def tearDown(self):
-        mongoengine.connection._connection_settings = {}
-        mongoengine.connection._connections = {}
-        mongoengine.connection._dbs = {}
+        mongoneo.connection._connection_settings = {}
+        mongoneo.connection._connections = {}
+        mongoneo.connection._dbs = {}
 
     def test_connect(self):
         """Ensure that the connect() method works properly."""
-        connect("mongoenginetest")
+        connect("mongoneotest")
 
         conn = get_connection()
         assert isinstance(conn, pymongo.MongoClient)
 
         db = get_db()
         assert isinstance(db, pymongo.database.Database)
-        assert db.name == "mongoenginetest"
+        assert db.name == "mongoneotest"
 
-        connect("mongoenginetest2", alias="testdb")
+        connect("mongoneotest2", alias="testdb")
         conn = get_connection("testdb")
         assert isinstance(conn, pymongo.MongoClient)
 
         connect(
-            "mongoenginetest2", alias="testdb3", mongo_client_class=pymongo.MongoClient
+            "mongoneotest2", alias="testdb3", mongo_client_class=pymongo.MongoClient
         )
         conn = get_connection("testdb")
         assert isinstance(conn, pymongo.MongoClient)
@@ -153,20 +153,20 @@ class ConnectionTest(unittest.TestCase):
         assert list(History2.objects().as_pymongo()) == [{"_id": h2.id, "name": "db2"}]
 
     def test_connect_fails_if_connect_2_times_with_default_alias(self):
-        connect("mongoenginetest")
+        connect("mongoneotest")
 
         with pytest.raises(ConnectionFailure) as exc_info:
-            connect("mongoenginetest2")
+            connect("mongoneotest2")
         assert (
             "A different connection with alias `default` was already registered. Use disconnect() first"
             == str(exc_info.value)
         )
 
     def test_connect_fails_if_connect_2_times_with_custom_alias(self):
-        connect("mongoenginetest", alias="alias1")
+        connect("mongoneotest", alias="alias1")
 
         with pytest.raises(ConnectionFailure) as exc_info:
-            connect("mongoenginetest2", alias="alias1")
+            connect("mongoneotest2", alias="alias1")
 
         assert (
             "A different connection with alias `alias1` was already registered. Use disconnect() first"
@@ -177,7 +177,7 @@ class ConnectionTest(unittest.TestCase):
         self,
     ):
         """Intended to keep the detecton function simple but robust"""
-        db_name = "mongoenginetest"
+        db_name = "mongoneotest"
         db_alias = "alias1"
         connect(db=db_name, alias=db_alias, host="localhost", port=27017)
 
@@ -217,13 +217,13 @@ class ConnectionTest(unittest.TestCase):
         # test default connection to `test`
         connect()
         connect()
-        assert len(mongoengine.connection._connections) == 1
+        assert len(mongoneo.connection._connections) == 1
         connect("test01", alias="test01")
         connect("test01", alias="test01")
-        assert len(mongoengine.connection._connections) == 2
-        connect(host="mongodb://localhost:27017/mongoenginetest02", alias="test02")
-        connect(host="mongodb://localhost:27017/mongoenginetest02", alias="test02")
-        assert len(mongoengine.connection._connections) == 3
+        assert len(mongoneo.connection._connections) == 2
+        connect(host="mongodb://localhost:27017/mongoneotest02", alias="test02")
+        connect(host="mongodb://localhost:27017/mongoneotest02", alias="test02")
+        assert len(mongoneo.connection._connections) == 3
 
     def test_connect_with_invalid_db_name(self):
         """Ensure that connect() method fails fast if db name is invalid"""
@@ -254,11 +254,11 @@ class ConnectionTest(unittest.TestCase):
 
     def test_disconnect_cleans_globals(self):
         """Ensure that the disconnect() method cleans the globals objects"""
-        connections = mongoengine.connection._connections
-        dbs = mongoengine.connection._dbs
-        connection_settings = mongoengine.connection._connection_settings
+        connections = mongoneo.connection._connections
+        dbs = mongoneo.connection._dbs
+        connection_settings = mongoneo.connection._connection_settings
 
-        connect("mongoenginetest")
+        connect("mongoneotest")
 
         assert len(connections) == 1
         assert len(dbs) == 0
@@ -277,7 +277,7 @@ class ConnectionTest(unittest.TestCase):
 
     def test_disconnect_cleans_cached_collection_attribute_in_document(self):
         """Ensure that the disconnect() method works properly"""
-        connect("mongoenginetest")
+        connect("mongoneotest")
 
         class History(Document):
             pass
@@ -331,7 +331,7 @@ class ConnectionTest(unittest.TestCase):
         assert db2_users == [{"_id": user2.id, "name": "Bob is in db2"}]
 
     def test_disconnect_silently_pass_if_alias_does_not_exist(self):
-        connections = mongoengine.connection._connections
+        connections = mongoneo.connection._connections
         assert len(connections) == 0
         disconnect(alias="not_exist")
 
@@ -360,12 +360,12 @@ class ConnectionTest(unittest.TestCase):
                 client3.admin.command("ping")
 
     def test_disconnect_all(self):
-        connections = mongoengine.connection._connections
-        dbs = mongoengine.connection._dbs
-        connection_settings = mongoengine.connection._connection_settings
+        connections = mongoneo.connection._connections
+        dbs = mongoneo.connection._dbs
+        connection_settings = mongoneo.connection._connection_settings
 
-        connect("mongoenginetest")
-        connect("mongoenginetest2", alias="db1")
+        connect("mongoneotest")
+        connect("mongoneotest2", alias="db1")
 
         class History(Document):
             pass
@@ -406,10 +406,10 @@ class ConnectionTest(unittest.TestCase):
 
     def test_sharing_connections(self):
         """Ensure that connections are shared when the connection settings are exactly the same"""
-        connect("mongoenginetests", alias="testdb1")
+        connect("mongoneotests", alias="testdb1")
         expected_connection = get_connection("testdb1")
 
-        connect("mongoenginetests", alias="testdb2")
+        connect("mongoneotests", alias="testdb2")
         actual_connection = get_connection("testdb2")
 
         expected_connection.server_info()
@@ -418,22 +418,22 @@ class ConnectionTest(unittest.TestCase):
 
     def test_connect_uri(self):
         """Ensure that the connect() method works properly with URIs."""
-        c = connect(db="mongoenginetest", alias="admin")
+        c = connect(db="mongoneotest", alias="admin")
         c.admin.system.users.delete_many({})
-        c.mongoenginetest.system.users.delete_many({})
+        c.mongoneotest.system.users.delete_many({})
 
         c.admin.command("createUser", "admin", pwd="password", roles=["root"])
 
-        adminadmin_settings = mongoengine.connection._connection_settings[
+        adminadmin_settings = mongoneo.connection._connection_settings[
             "adminadmin"
-        ] = mongoengine.connection._connection_settings["admin"].copy()
+        ] = mongoneo.connection._connection_settings["admin"].copy()
         adminadmin_settings["username"] = "admin"
         adminadmin_settings["password"] = "password"
-        ca = connect(db="mongoenginetest", alias="adminadmin")
+        ca = connect(db="mongoneotest", alias="adminadmin")
         ca.admin.command("createUser", "username", pwd="password", roles=["dbOwner"])
 
         connect(
-            "testdb_uri", host="mongodb://username:password@localhost/mongoenginetest"
+            "testdb_uri", host="mongodb://username:password@localhost/mongoneotest"
         )
 
         conn = get_connection()
@@ -441,23 +441,23 @@ class ConnectionTest(unittest.TestCase):
 
         db = get_db()
         assert isinstance(db, pymongo.database.Database)
-        assert db.name == "mongoenginetest"
+        assert db.name == "mongoneotest"
 
         c.admin.system.users.delete_many({})
-        c.mongoenginetest.system.users.delete_many({})
+        c.mongoneotest.system.users.delete_many({})
 
     def test_connect_uri_without_db(self):
         """Ensure connect() method works properly if the URI doesn't
         include a database name.
         """
-        connect("mongoenginetest", host="mongodb://localhost/")
+        connect("mongoneotest", host="mongodb://localhost/")
 
         conn = get_connection()
         assert isinstance(conn, pymongo.mongo_client.MongoClient)
 
         db = get_db()
         assert isinstance(db, pymongo.database.Database)
-        assert db.name == "mongoenginetest"
+        assert db.name == "mongoneotest"
 
     def test_connect_uri_default_db(self):
         """Ensure connect() defaults to the right database name if
@@ -477,10 +477,10 @@ class ConnectionTest(unittest.TestCase):
         doesn't explicitly specify them.
         """
         connect(
-            host="mongodb://localhost/mongoenginetest", username="user", password="pass"
+            host="mongodb://localhost/mongoneotest", username="user", password="pass"
         )
 
-        # OperationFailure means that mongoengine attempted authentication
+        # OperationFailure means that mongoneo attempted authentication
         # w/ the provided username/password and failed - that's the desired
         # behavior. If the MongoDB URI would override the credentials
         if PYMONGO_VERSION >= (4,):
@@ -497,39 +497,39 @@ class ConnectionTest(unittest.TestCase):
         option in the URI.
         """
         # Create users
-        c = connect("mongoenginetest")
+        c = connect("mongoneotest")
 
         c.admin.system.users.delete_many({})
         c.admin.command("createUser", "username2", pwd="password", roles=["dbOwner"])
 
         # Authentication fails without "authSource"
         test_conn = connect(
-            "mongoenginetest",
+            "mongoneotest",
             alias="test1",
-            host="mongodb://username2:password@localhost/mongoenginetest",
+            host="mongodb://username2:password@localhost/mongoneotest",
         )
         with pytest.raises(OperationFailure):
             test_conn.server_info()
 
         # Authentication succeeds with "authSource"
         authd_conn = connect(
-            "mongoenginetest",
+            "mongoneotest",
             alias="test2",
             host=(
                 "mongodb://username2:password@localhost/"
-                "mongoenginetest?authSource=admin"
+                "mongoneotest?authSource=admin"
             ),
         )
         db = get_db("test2")
         assert isinstance(db, pymongo.database.Database)
-        assert db.name == "mongoenginetest"
+        assert db.name == "mongoneotest"
 
         # Clear all users
         authd_conn.admin.system.users.delete_many({})
 
     def test_register_connection(self):
         """Ensure that connections with different aliases may be registered."""
-        register_connection("testdb", "mongoenginetest2")
+        register_connection("testdb", "mongoneotest2")
 
         with pytest.raises(ConnectionFailure):
             get_connection()
@@ -538,23 +538,23 @@ class ConnectionTest(unittest.TestCase):
 
         db = get_db("testdb")
         assert isinstance(db, pymongo.database.Database)
-        assert db.name == "mongoenginetest2"
+        assert db.name == "mongoneotest2"
 
     def test_register_connection_defaults(self):
         """Ensure that defaults are used when the host and port are None."""
-        register_connection("testdb", "mongoenginetest", host=None, port=None)
+        register_connection("testdb", "mongoneotest", host=None, port=None)
 
         conn = get_connection("testdb")
         assert isinstance(conn, pymongo.mongo_client.MongoClient)
 
     def test_connection_kwargs(self):
         """Ensure that connection kwargs get passed to pymongo."""
-        connect("mongoenginetest", alias="t1", tz_aware=True)
+        connect("mongoneotest", alias="t1", tz_aware=True)
         conn = get_connection("t1")
 
         assert get_tz_awareness(conn)
 
-        connect("mongoenginetest2", alias="t2")
+        connect("mongoneotest2", alias="t2")
         conn = get_connection("t2")
         assert not get_tz_awareness(conn)
 
@@ -565,7 +565,7 @@ class ConnectionTest(unittest.TestCase):
         pool_size_kwargs = {"maxpoolsize": 100}
 
         conn = connect(
-            "mongoenginetest", alias="max_pool_size_via_kwarg", **pool_size_kwargs
+            "mongoneotest", alias="max_pool_size_via_kwarg", **pool_size_kwargs
         )
         if PYMONGO_VERSION >= (4,):
             assert conn.options.pool_options.max_pool_size == 100
@@ -619,7 +619,7 @@ class ConnectionTest(unittest.TestCase):
         assert db.name == "test"
 
     def test_connect_tz_aware(self):
-        connect("mongoenginetest", tz_aware=True)
+        connect("mongoneotest", tz_aware=True)
         d = datetime.datetime(2010, 5, 5, tzinfo=utc)
 
         class DateDoc(Document):
@@ -639,19 +639,19 @@ class ConnectionTest(unittest.TestCase):
 
     def test_multiple_connection_settings(self):
         connect(
-            "mongoenginetest",
+            "mongoneotest",
             alias="t1",
             host="localhost",
             read_preference=ReadPreference.PRIMARY,
         )
         connect(
-            "mongoenginetest2",
+            "mongoneotest2",
             alias="t2",
             host="127.0.0.1",
             read_preference=ReadPreference.PRIMARY_PREFERRED,
         )
 
-        mongo_connections = mongoengine.connection._connections
+        mongo_connections = mongoneo.connection._connections
         assert len(mongo_connections.items()) == 2
         assert "t1" in mongo_connections.keys()
         assert "t2" in mongo_connections.keys()

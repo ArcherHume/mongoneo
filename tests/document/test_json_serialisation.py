@@ -4,7 +4,7 @@ from datetime import datetime
 
 from bson import ObjectId
 
-from mongoengine import *
+from mongoneo import *
 from tests.utils import MongoDBTestCase
 
 
@@ -12,7 +12,7 @@ class TestJson(MongoDBTestCase):
     def test_json_names(self):
         """
         Going to test reported issue:
-            https://github.com/MongoEngine/mongoengine/issues/654
+            https://github.com/MongoNeo/mongoneo/issues/654
         where the reporter asks for the availability to perform
         a to_json with the original class names and not the abreviated
         mongodb document keys
@@ -79,7 +79,7 @@ class TestJson(MongoDBTestCase):
             map_field = MapField(IntField(), default=lambda: {"simple": 1})
             decimal_field = DecimalField(default=1.0)
             complex_datetime_field = ComplexDateTimeField(default=datetime.now)
-            url_field = URLField(default="http://mongoengine.org")
+            url_field = URLField(default="http://mongoneo.org")
             dynamic_field = DynamicField(default=1)
             generic_reference_field = GenericReferenceField(
                 default=lambda: Simple().save()

@@ -1,8 +1,8 @@
 import pytest
 from pymongo.read_preferences import ReadPreference
 
-from mongoengine import Document, IntField, PointField, StringField
-from mongoengine.mongodb_support import (
+from mongoneo import Document, IntField, PointField, StringField
+from mongoneo.mongodb_support import (
     MONGODB_36,
     get_mongodb_version,
 )
@@ -110,7 +110,7 @@ class TestQuerysetAggregate(MongoDBTestCase):
 
         with db_ops_tracker() as q:
             _ = list(AggPerson.objects.comment(comment).aggregate(pipeline))
-            query_op = q.db.system.profile.find({"ns": "mongoenginetest.agg_person"})[0]
+            query_op = q.db.system.profile.find({"ns": "mongoneotest.agg_person"})[0]
             CMD_QUERY_KEY = "command" if mongo_ver >= MONGODB_36 else "query"
             assert "hint" not in query_op[CMD_QUERY_KEY]
             assert query_op[CMD_QUERY_KEY]["comment"] == comment
@@ -118,7 +118,7 @@ class TestQuerysetAggregate(MongoDBTestCase):
 
         with db_ops_tracker() as q:
             _ = list(AggPerson.objects.hint(index_name).aggregate(pipeline))
-            query_op = q.db.system.profile.find({"ns": "mongoenginetest.agg_person"})[0]
+            query_op = q.db.system.profile.find({"ns": "mongoneotest.agg_person"})[0]
             CMD_QUERY_KEY = "command" if mongo_ver >= MONGODB_36 else "query"
             assert query_op[CMD_QUERY_KEY]["hint"] == "name_1"
             assert "comment" not in query_op[CMD_QUERY_KEY]
@@ -126,7 +126,7 @@ class TestQuerysetAggregate(MongoDBTestCase):
 
         with db_ops_tracker() as q:
             _ = list(AggPerson.objects.collation(base).aggregate(pipeline))
-            query_op = q.db.system.profile.find({"ns": "mongoenginetest.agg_person"})[0]
+            query_op = q.db.system.profile.find({"ns": "mongoneotest.agg_person"})[0]
             CMD_QUERY_KEY = "command" if mongo_ver >= MONGODB_36 else "query"
             assert "hint" not in query_op[CMD_QUERY_KEY]
             assert "comment" not in query_op[CMD_QUERY_KEY]
@@ -289,7 +289,7 @@ class TestQuerysetAggregate(MongoDBTestCase):
 
     def test_queryset_aggregation_geonear_aggregation_on_pointfield(self):
         """test ensures that $geonear can be used as a 1-stage pipeline and that
-        MongoEngine does not interfer with such pipeline (#2473)
+        MongoNeo does not interfer with such pipeline (#2473)
         """
 
         class Aggr(Document):

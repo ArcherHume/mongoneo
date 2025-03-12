@@ -17,15 +17,15 @@ __all__ = (
 )
 
 
-class MongoEngineException(Exception):
+class MongoNeoException(Exception):
     pass
 
 
-class NotRegistered(MongoEngineException):
+class NotRegistered(MongoNeoException):
     pass
 
 
-class InvalidDocumentError(MongoEngineException):
+class InvalidDocumentError(MongoNeoException):
     pass
 
 
@@ -33,19 +33,19 @@ class LookUpError(AttributeError):
     pass
 
 
-class DoesNotExist(MongoEngineException):
+class DoesNotExist(MongoNeoException):
     pass
 
 
-class MultipleObjectsReturned(MongoEngineException):
+class MultipleObjectsReturned(MongoNeoException):
     pass
 
 
-class InvalidQueryError(MongoEngineException):
+class InvalidQueryError(MongoNeoException):
     pass
 
 
-class OperationError(MongoEngineException):
+class OperationError(MongoNeoException):
     pass
 
 
@@ -61,10 +61,10 @@ class SaveConditionError(OperationError):
     pass
 
 
-class FieldDoesNotExist(MongoEngineException):
+class FieldDoesNotExist(MongoNeoException):
     """Raised when trying to set a field
-    not declared in a :class:`~mongoengine.Document`
-    or an :class:`~mongoengine.EmbeddedDocument`.
+    not declared in a :class:`~mongoneo.Document`
+    or an :class:`~mongoneo.EmbeddedDocument`.
 
     To avoid this behavior on data loading,
     you should set the :attr:`strict` to ``False``
@@ -159,7 +159,7 @@ class ValidationError(AssertionError):
         return " ".join([f"{k}: {v}" for k, v in error_dict.items()])
 
 
-class DeprecatedError(MongoEngineException):
+class DeprecatedError(MongoNeoException):
     """Raise when a user uses a feature that has been Deprecated"""
 
     pass

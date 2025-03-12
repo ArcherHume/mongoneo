@@ -1,7 +1,7 @@
 from timeit import repeat
 
-import mongoengine
-from mongoengine import (
+import mongoneo
+from mongoneo import (
     BooleanField,
     Document,
     EmailField,
@@ -12,7 +12,7 @@ from mongoengine import (
     StringField,
 )
 
-mongoengine.connect(db="mongoengine_benchmark_test", w=1)
+mongoneo.connect(db="mongoneo_benchmark_test", w=1)
 
 
 def timeit(f, n=10000):

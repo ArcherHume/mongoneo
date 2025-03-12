@@ -1,7 +1,7 @@
 import pytest
 from bson import Int64
 
-from mongoengine import *
+from mongoneo import *
 from tests.utils import MongoDBTestCase
 
 

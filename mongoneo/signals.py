@@ -44,7 +44,7 @@ except ImportError:
         del _fail
 
 
-# the namespace for code signals.  If you are not mongoengine code, do
+# the namespace for code signals.  If you are not mongoneo code, do
 # not put signals in here.  Create your own namespace instead.
 _signals = Namespace()
 

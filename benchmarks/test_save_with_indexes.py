@@ -6,11 +6,11 @@ def main():
 from pymongo import MongoClient
 
 connection = MongoClient()
-connection.drop_database("mongoengine_benchmark_test")
+connection.drop_database("mongoneo_benchmark_test")
 connection.close()
 
-from mongoengine import connect, Document, IntField, StringField
-connect("mongoengine_benchmark_test", w=1)
+from mongoneo import connect, Document, IntField, StringField
+connect("mongoneo_benchmark_test", w=1)
 
 class User0(Document):
     name = StringField()

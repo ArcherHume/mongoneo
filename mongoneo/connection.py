@@ -16,8 +16,8 @@ try:
 except ImportError:
     DriverInfo = None
 
-import mongoengine
-from mongoengine.pymongo_support import PYMONGO_VERSION
+import mongoneo
+from mongoneo.pymongo_support import PYMONGO_VERSION
 
 __all__ = [
     "DEFAULT_CONNECTION_NAME",
@@ -235,7 +235,7 @@ def register_connection(
 ):
     """Register the connection settings.
 
-    :param alias: the name that will be used to refer to this connection throughout MongoEngine
+    :param alias: the name that will be used to refer to this connection throughout MongoNeo
     :param db: the name of the database to use, for compatibility with connect
     :param name: the name of the specific database to use
     :param host: the host name of the: program: `mongod` instance to connect to
@@ -272,12 +272,12 @@ def register_connection(
 
 def disconnect(alias=DEFAULT_CONNECTION_NAME):
     """Close the connection with a given alias."""
-    from mongoengine import Document
-    from mongoengine.base.common import _get_documents_by_db
+    from mongoneo import Document
+    from mongoneo.base.common import _get_documents_by_db
 
     connection = _connections.pop(alias, None)
     if connection:
-        # MongoEngine may share the same MongoClient across multiple aliases
+        # MongoNeo may share the same MongoClient across multiple aliases
         # if connection settings are the same so we only close
         # the client if we're removing the final reference.
         # Important to use 'is' instead of '==' because clients connected to the same cluster
@@ -355,7 +355,7 @@ def get_connection(alias=DEFAULT_CONNECTION_NAME, reconnect=False):
     conn_settings = _clean_settings(raw_conn_settings)
     if DriverInfo is not None:
         conn_settings.setdefault(
-            "driver", DriverInfo("MongoEngine", mongoengine.__version__)
+            "driver", DriverInfo("MongoNeo", mongoneo.__version__)
         )
 
     # Determine if we should use PyMongo's or mongomock's MongoClient.
@@ -405,7 +405,7 @@ def _find_existing_connection(connection_settings):
     def _clean_settings(settings_dict):
         # Only remove the name but it's important to
         # keep the username/password/authentication_source/authentication_mechanism
-        # to identify if the connection could be shared (cfr https://github.com/MongoEngine/mongoengine/issues/2047)
+        # to identify if the connection could be shared (cfr https://github.com/MongoNeo/mongoneo/issues/2047)
         return {k: v for k, v in settings_dict.items() if k != "name"}
 
     cleaned_conn_settings = _clean_settings(connection_settings)

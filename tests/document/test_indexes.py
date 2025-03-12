@@ -5,18 +5,18 @@ import pytest
 from pymongo.collation import Collation
 from pymongo.errors import OperationFailure
 
-from mongoengine import *
-from mongoengine.connection import get_db
-from mongoengine.mongodb_support import (
+from mongoneo import *
+from mongoneo.connection import get_db
+from mongoneo.mongodb_support import (
     MONGODB_42,
     get_mongodb_version,
 )
-from mongoengine.pymongo_support import PYMONGO_VERSION
+from mongoneo.pymongo_support import PYMONGO_VERSION
 
 
 class TestIndexes(unittest.TestCase):
     def setUp(self):
-        self.connection = connect(db="mongoenginetest")
+        self.connection = connect(db="mongoneotest")
         self.db = get_db()
 
         class Person(Document):
@@ -1026,7 +1026,7 @@ class TestIndexes(unittest.TestCase):
     def test_index_dont_send_cls_option(self):
         """
         Ensure that 'cls' option is not sent through ensureIndex. We shouldn't
-        send internal MongoEngine arguments that are not a part of the index
+        send internal MongoNeo arguments that are not a part of the index
         spec.
 
         This is directly related to the fact that MongoDB doesn't validate the
@@ -1098,7 +1098,7 @@ class TestIndexes(unittest.TestCase):
     def test_compare_indexes_works_with_compound_text_indexes(self):
         """The order of the fields in case of text indexes don't matter
         so it's important to ensure that the compare_indexes method works that way
-        https://github.com/MongoEngine/mongoengine/issues/2612
+        https://github.com/MongoNeo/mongoneo/issues/2612
         """
 
         class Sample1(Document):

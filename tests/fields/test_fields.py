@@ -4,7 +4,7 @@ import unittest
 import pytest
 from bson import SON, DBRef, ObjectId
 
-from mongoengine import (
+from mongoneo import (
     BooleanField,
     ComplexDateTimeField,
     DateField,
@@ -34,13 +34,13 @@ from mongoengine import (
     StringField,
     ValidationError,
 )
-from mongoengine.base import (
+from mongoneo.base import (
     BaseField,
     EmbeddedDocumentList,
     _DocumentRegistry,
 )
-from mongoengine.base.fields import _no_dereference_for_fields
-from mongoengine.errors import DeprecatedError
+from mongoneo.base.fields import _no_dereference_for_fields
+from mongoneo.errors import DeprecatedError
 from tests.utils import MongoDBTestCase
 
 

@@ -6,25 +6,25 @@ from functools import partial
 import pymongo
 from bson import SON, DBRef, ObjectId, json_util
 
-from mongoengine import signals
-from mongoengine.base.common import _DocumentRegistry
-from mongoengine.base.datastructures import (
+from mongoneo import signals
+from mongoneo.base.common import _DocumentRegistry
+from mongoneo.base.datastructures import (
     BaseDict,
     BaseList,
     EmbeddedDocumentList,
     LazyReference,
     StrictDict,
 )
-from mongoengine.base.fields import ComplexBaseField
-from mongoengine.common import _import_class
-from mongoengine.errors import (
+from mongoneo.base.fields import ComplexBaseField
+from mongoneo.common import _import_class
+from mongoneo.errors import (
     FieldDoesNotExist,
     InvalidDocumentError,
     LookUpError,
     OperationError,
     ValidationError,
 )
-from mongoengine.pymongo_support import LEGACY_JSON_OPTIONS
+from mongoneo.pymongo_support import LEGACY_JSON_OPTIONS
 
 __all__ = ("BaseDocument", "NON_FIELD_ERRORS")
 
@@ -882,7 +882,7 @@ class BaseDocument:
 
     @classmethod
     def _build_index_spec(cls, spec):
-        """Build a PyMongo index spec from a MongoEngine index spec."""
+        """Build a PyMongo index spec from a MongoNeo index spec."""
         if isinstance(spec, str):
             spec = {"fields": [spec]}
         elif isinstance(spec, (list, tuple)):
@@ -1079,20 +1079,20 @@ class BaseDocument:
 
         Example:
             >>> user._lookup_field('name')
-            [<mongoengine.fields.StringField at 0x1119bff50>]
+            [<mongoneo.fields.StringField at 0x1119bff50>]
 
             >>> user._lookup_field('roles')
-            [<mongoengine.fields.EmbeddedDocumentListField at 0x1119ec250>]
+            [<mongoneo.fields.EmbeddedDocumentListField at 0x1119ec250>]
 
             >>> user._lookup_field(['roles', 'role'])
-            [<mongoengine.fields.EmbeddedDocumentListField at 0x1119ec250>,
-             <mongoengine.fields.StringField at 0x1119ec050>]
+            [<mongoneo.fields.EmbeddedDocumentListField at 0x1119ec250>,
+             <mongoneo.fields.StringField at 0x1119ec050>]
 
             >>> user._lookup_field('doesnt_exist')
             raises LookUpError
 
             >>> user._lookup_field(['roles', 'doesnt_exist'])
-            [<mongoengine.fields.EmbeddedDocumentListField at 0x1119ec250>,
+            [<mongoneo.fields.EmbeddedDocumentListField at 0x1119ec250>,
              'doesnt_exist']
 
         """

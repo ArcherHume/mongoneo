@@ -2,7 +2,7 @@ from decimal import Decimal
 
 import pytest
 
-from mongoengine import (
+from mongoneo import (
     CachedReferenceField,
     DecimalField,
     Document,

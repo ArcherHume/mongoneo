@@ -2,8 +2,8 @@ import datetime as dt
 
 import pytest
 
-from mongoengine import *
-from mongoengine import connection
+from mongoneo import *
+from mongoneo import connection
 from tests.utils import MongoDBTestCase, get_as_pymongo
 
 try:
@@ -233,7 +233,7 @@ class TestDateTimeTzAware(MongoDBTestCase):
         connection._connections = {}
         connection._dbs = {}
 
-        connect(db="mongoenginetest", tz_aware=True)
+        connect(db="mongoneotest", tz_aware=True)
 
         class LogEntry(Document):
             time = DateTimeField()

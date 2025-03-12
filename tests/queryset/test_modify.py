@@ -1,6 +1,6 @@
 import unittest
 
-from mongoengine import (
+from mongoneo import (
     Document,
     IntField,
     ListField,
@@ -16,7 +16,7 @@ class Doc(Document):
 
 class TestFindAndModify(unittest.TestCase):
     def setUp(self):
-        connect(db="mongoenginetest")
+        connect(db="mongoneotest")
         Doc.drop_collection()
 
     def _assert_db_equal(self, docs):

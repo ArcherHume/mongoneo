@@ -1,5 +1,5 @@
-from mongoengine import Document
-from mongoengine.pymongo_support import count_documents
+from mongoneo import Document
+from mongoneo.pymongo_support import count_documents
 from tests.utils import MongoDBTestCase
 
 

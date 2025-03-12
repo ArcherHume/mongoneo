@@ -3,7 +3,7 @@ import warnings
 
 import pytest
 
-from mongoengine import (
+from mongoneo import (
     BooleanField,
     Document,
     EmbeddedDocument,
@@ -13,7 +13,7 @@ from mongoengine import (
     ReferenceField,
     StringField,
 )
-from mongoengine.pymongo_support import list_collection_names
+from mongoneo.pymongo_support import list_collection_names
 from tests.fixtures import Base
 from tests.utils import MongoDBTestCase
 
